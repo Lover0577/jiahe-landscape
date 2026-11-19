@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en" data-language="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
-  <meta name="description" content="迦和园林 Jiahe Landscape — 温哥华围栏、露台、地面铺砖硬化、花圃、挡土墙、人工草坪与户外楼梯服务。" />
+  <meta name="description" content="Jiahe Landscape — Fences, decks, pavers & hardscaping, garden beds, retaining walls, artificial turf and outdoor stairs in Vancouver. 迦和园林 — 温哥华园林服务。" />
   <link rel="icon" href="data:," />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +25,7 @@
       --line: #cbd1c8;
       --soft: #e4e8df;
       --shadow: 0 22px 54px rgba(18, 45, 33, .14);
-      --font-body: "Noto Sans SC", "DM Sans", sans-serif;
+      --font-body: "DM Sans", "Noto Sans SC", sans-serif;
       --font-en: "DM Sans", sans-serif;
       --font-display: "Young Serif", "Noto Sans SC", serif;
     }
@@ -1005,8 +1005,8 @@
       </nav>
       <a class="quote-nav" href="#quote"><span data-lang="zh">欢迎咨询</span><span data-lang="en">Contact Us</span></a>
       <div class="lang-switch" role="group" aria-label="Language selection / 语言选择">
-        <button type="button" data-set-lang="zh" aria-pressed="true">中文</button>
-        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-set-lang="en" aria-pressed="true" class="active">EN</button>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
       </div>
     </div>
     </div>
@@ -1403,7 +1403,7 @@
   buttons.forEach(function (button) {
     button.addEventListener('click', function () { setLanguage(button.getAttribute('data-set-lang')); });
   });
-  setLanguage('zh');
+  setLanguage('en');
 
   // Email links: a plain mailto: does nothing inside some in-app webviews
   // (no mail handler is registered there), so a tap looks dead. Handle every
@@ -1417,7 +1417,7 @@
   var emailToastTimer = null;
   function showEmailToast(copied) {
     if (!emailToast || !emailToastText) { return; }
-    var lang = root.getAttribute('data-language') === 'en' ? 'en' : 'zh';
+    var lang = root.getAttribute('data-language') === 'zh' ? 'zh' : 'en';
     if (copied) {
       emailToastText.textContent = lang === 'en'
         ? 'Email address copied: ' + BUSINESS_EMAIL + '. If no mail window opened, paste it into your mail app.'
@@ -1674,7 +1674,7 @@
     if (!item || !lbImg) { return; }
     lbImg.setAttribute('src', item.src);
     lbImg.setAttribute('alt', item.alt);
-    var lang = root.getAttribute('data-language') === 'en' ? 'en' : 'zh';
+    var lang = root.getAttribute('data-language') === 'zh' ? 'zh' : 'en';
     lbCap.textContent = lang === 'en' ? item.en : item.zh;
     lbCount.textContent = (lbIndex + 1) + ' / ' + lbItems.length;
   }
@@ -1764,7 +1764,7 @@
     if (typeof worksFilter === 'undefined' || typeof worksShown === 'undefined') { return; }
     var grid = document.getElementById('works-grid');
     if (!grid) { return; }
-    var lang = root.getAttribute('data-language') === 'en' ? 'en' : 'zh';
+    var lang = root.getAttribute('data-language') === 'zh' ? 'zh' : 'en';
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.work-card'));
     var matching = cards.filter(function (card) {
       return worksFilter === 'all' || card.getAttribute('data-cat') === worksFilter;
