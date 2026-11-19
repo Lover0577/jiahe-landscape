@@ -187,21 +187,29 @@
       padding: 3px;
       border: 1px solid rgba(255,255,255,.35);
       border-radius: 2px;
+      position: relative;
+      z-index: 30;
+      pointer-events: auto;
+      touch-action: manipulation;
+      flex: 0 0 auto;
     }
     .lang-switch button {
       border: 0;
       border-radius: 1px;
       background: transparent;
       color: rgba(255,255,255,.72);
-      min-width: 48px;
-      height: 31px;
+      min-width: 52px;
+      min-height: 40px;
       padding: 0 12px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 14px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(185,205,156,.35);
+      pointer-events: auto;
     }
     .lang-switch button.active { background: #eef4ec; color: var(--forest-deep); }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; position: relative; z-index: 30; }
     .quote-nav {
       display: inline-flex;
       align-items: center;
@@ -829,8 +837,10 @@
       .work-card.full { grid-column: span 2; }
       .contact { gap: 34px; }
       .form-grid { grid-template-columns: 1fr; }
-      .topbar-right { gap: 10px; }
+      .topbar-right { gap: 10px; justify-content: center; max-width: 100%; }
       .quote-nav { padding: 0 12px; font-size: 13px; }
+      .lang-switch { order: 3; }
+      .lang-switch button { min-width: 58px; min-height: 44px; padding: 0 14px; font-size: 15px; }
     }
     @media (max-width: 520px) {
       .wrap { width: min(100% - 28px, 1240px); }
@@ -948,7 +958,7 @@
     @media (max-width: 520px) {
       .brand-logo { width: 100%; }
       .site-nav a { font-size: 13px; }
-      .lang-switch button { min-width: 42px; padding: 0 8px; }
+      .lang-switch button { min-width: 56px; min-height: 44px; padding: 0 12px; font-size: 15px; }
       .chip { padding: 9px 13px; font-size: 13px; }
     }
   </style>
@@ -1402,7 +1412,21 @@
     if (lbOpen) { renderLightbox(); }
   }
   buttons.forEach(function (button) {
-    button.addEventListener('click', function () { setLanguage(button.getAttribute('data-set-lang')); });
+    var lang = button.getAttribute('data-set-lang');
+    button.addEventListener('click', function () { setLanguage(lang); });
+    // Touch fallback: on some phone browsers the header row sits under the
+    // browser's tap/hover handling and a plain click can be swallowed or
+    // delayed, making the 中文 button feel dead. Switch on touchend /
+    // pointerup as well so a single tap always changes the language.
+    button.addEventListener('touchend', function (event) {
+      event.preventDefault();
+      setLanguage(lang);
+    }, { passive: false });
+    button.addEventListener('pointerup', function (event) {
+      if (event.pointerType === 'touch' || event.pointerType === 'pen') {
+        setLanguage(lang);
+      }
+    });
   });
   setLanguage('en');
 
