@@ -1169,7 +1169,8 @@
           </p>
         </div>
 
-        <form class="quote-form" id="quote-form" action="https://formsubmit.co/jh7788886674@gmail.com" method="POST">
+        <form class="quote-form" id="quote-form" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="a09f0177-7330-4696-a0b1-fa653b25e04d" />
           <div class="form-grid">
             <div class="field">
               <label for="q-name"><span data-lang="zh">姓名</span><span data-lang="en">Name</span> <span class="req" aria-hidden="true">*</span></label>
@@ -1502,10 +1503,9 @@
     });
   });
 
-  // Quote form: send to FormSubmit with an AJAX POST and stay on this page.
+  // Quote form: send to Web3Forms with an AJAX POST and stay on this page.
   // A classic full-page form POST gets broken when this page is viewed
-  // inside an app webview: the navigation is handed off as a plain GET and
-  // FormSubmit rejects it with its "Form should POST" error page.
+  // inside an app webview, so the submit is always handled here instead.
   var form = document.getElementById('quote-form');
   var success = document.getElementById('quote-success');
   function showQuoteSuccess() {
@@ -1523,7 +1523,7 @@
     var sendError = document.getElementById('quote-send-error');
     form.addEventListener('submit', function (event) {
       // Always handle the submit here; never let the browser do a
-      // full-page POST navigation to formsubmit.co.
+      // full-page POST navigation to the form backend.
       event.preventDefault();
       var checked = form.querySelectorAll('input[name="Services"]:checked');
       var error = document.getElementById('quote-error');
@@ -1536,11 +1536,22 @@
       }
       if (error) { error.hidden = true; }
       if (sendError) { sendError.hidden = true; }
-      if (submitBtn) { submitBtn.disabled = true; }
+      // Sending state: disable the button and swap its label to
+      // Sending… / 发送中… in the current language until the request settles.
+      var submitBtnHTML = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-busy', 'true');
+        var curLang = root.getAttribute('data-language') === 'zh' ? 'zh' : 'en';
+        submitBtn.textContent = curLang === 'zh' ? '发送中…' : 'Sending…';
+      }
 
       var services = [];
       checked.forEach(function (box) { services.push(box.value); });
       var payload = {
+        'access_key': 'a09f0177-7330-4696-a0b1-fa653b25e04d',
+        'subject': '网站咨询请求 / Consultation request — Jiahe Landscape',
+        'from_name': 'Jiahe Landscape Website',
         'Name': document.getElementById('q-name').value,
         'Phone': document.getElementById('q-phone').value,
         'email': document.getElementById('q-email').value,
@@ -1548,18 +1559,20 @@
         'Services': services.join(', '),
         'Preferred visit date': document.getElementById('q-date').value,
         'Preferred visit time': document.getElementById('q-time').value,
-        'Project description': document.getElementById('q-desc').value,
-        '_subject': '网站咨询请求 / Consultation request — Jiahe Landscape',
-        '_template': 'table',
-        '_captcha': 'false'
+        'Project description': document.getElementById('q-desc').value
       };
-      fetch('https://formsubmit.co/ajax/jh7788886674@gmail.com', {
+      // Short timeout so a stalled connection fails fast (12s) instead
+      // of leaving the visitor waiting on a hung request.
+      var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var timeoutId = controller ? window.setTimeout(function () { controller.abort(); }, 12000) : null;
+      fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined
       }).then(function (response) {
         return response.json().catch(function () { return null; }).then(function (data) {
-          if (response.ok && data && String(data.success) === 'true') {
+          if (response.ok && data && data.success === true) {
             form.reset();
             showQuoteSuccess();
           } else {
@@ -1572,7 +1585,12 @@
           sendError.scrollIntoView({ block: 'center' });
         }
       }).then(function () {
-        if (submitBtn) { submitBtn.disabled = false; }
+        if (timeoutId) { window.clearTimeout(timeoutId); }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-busy');
+          submitBtn.innerHTML = submitBtnHTML;
+        }
       });
     });
   }
