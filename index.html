@@ -89,7 +89,11 @@
       box-shadow: 0 12px 34px rgba(0,0,0,.22);
       animation: logoFloat 3.6s ease-in-out infinite, logoGlow 3.6s ease-in-out infinite;
       transform-origin: center center;
+      text-decoration: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(185,205,156,.35);
     }
+    a.brand-logo:focus-visible { outline: 3px solid var(--clay); outline-offset: 3px; }
     .brand-logo::after {
       content: "";
       position: absolute;
@@ -878,6 +882,21 @@
     }
     .site-nav a:hover { color: var(--leaf); }
     .site-nav a[aria-current="page"] { color: var(--leaf); box-shadow: inset 0 -2px 0 var(--clay); }
+    .site-nav a.nav-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 37px;
+      padding: 0 14px;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 2px;
+      background: rgba(255,255,255,.08);
+      transition: background .2s ease, border-color .2s ease, color .2s ease;
+    }
+    .site-nav a.nav-home svg { width: 15px; height: 15px; flex: 0 0 auto; }
+    .site-nav a.nav-home:hover { background: rgba(185,205,156,.18); border-color: var(--leaf); color: var(--leaf); }
+    .site-nav a.nav-home[aria-current="page"] { background: rgba(185,205,156,.16); border-color: var(--leaf); color: var(--leaf); box-shadow: none; }
+    .site-nav a.nav-home:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
     #view-home[hidden], #view-works[hidden] { display: none; }
     .view-all { margin-top: 30px; }
     /* Works page */
@@ -951,7 +970,8 @@
     .works-cta p { margin: 0; font-size: clamp(18px, 2vw, 23px); font-weight: 700; }
     @media (max-width: 760px) {
       .site-nav { gap: 12px; }
-      .site-nav a.nav-home { display: none; }
+      .site-nav a { display: inline-flex; align-items: center; min-height: 44px; }
+      .site-nav a.nav-home { padding: 0 13px; }
       .works-hero { padding: 46px 0 44px; }
       .works-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
       .works-cta { justify-content: center; text-align: center; }
@@ -966,8 +986,8 @@
 </head>
 <body>
 <div class="page">
-  <div class="wrap topbar">
-    <div class="brand-logo" role="img" aria-label="迦和园林 Jiahe Landscape">
+  <div class="wrap topbar" id="home">
+    <a class="brand-logo" href="#home" aria-label="迦和园林 Jiahe Landscape — 返回首页 / Back to home" title="返回首页 / Back to home">
       <svg viewBox="0 0 1440 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
           <linearGradient id="logo-leaf" x1="0" y1="0" x2="1" y2="1">
@@ -1002,7 +1022,7 @@
           </g>
         </g>
       </svg>
-    </div>
+    </a>
     <div class="header-fill">
       <p class="hf-areas"><span data-lang="zh">服务区域：温哥华 · 高贵林 · 高贵林港 · 本拿比 · 素里 · 列治文 · 满地宝 · 新西敏及周边地区</span><span data-lang="en">Serving Vancouver · Coquitlam · Port Coquitlam · Burnaby · Surrey · Richmond · Port Moody · New Westminster &amp; surrounding areas</span></p>
       <p class="hf-services"><span data-lang="zh">围栏 · 露台 Deck · 地面铺砖 · 花圃 · 挡土墙 · 人工草坪 · 户外楼梯</span><span data-lang="en">Fences · Decks · Pavers · Garden beds · Retaining walls · Artificial turf · Outdoor stairs</span></p>
@@ -1011,7 +1031,7 @@
     <div class="quick-contact"><a href="tel:+17788886674">778-888-6674</a><span>·</span><a href="mailto:jh7788886674@gmail.com">jh7788886674@gmail.com</a></div>
     <div class="topbar-right">
       <nav class="site-nav" aria-label="主导航 / Main navigation">
-        <a class="nav-home" href="#home" data-nav="home" aria-current="page"><span data-lang="zh">首页</span><span data-lang="en">Home</span></a>
+        <a class="nav-home" href="#home" data-nav="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span data-lang="zh">首页</span><span data-lang="en">Home</span></a>
         <a href="#works" data-nav="works"><span data-lang="zh">案例</span><span data-lang="en">Our Works</span></a>
       </nav>
       <a class="quote-nav" href="#quote"><span data-lang="zh">欢迎咨询</span><span data-lang="en">Contact Us</span></a>
@@ -1798,6 +1818,15 @@
     else { window.scrollTo(0, 0); }
   }
   window.addEventListener('hashchange', route);
+  // Home links (top nav button, logo, footer, works-page back link):
+  // always switch back to the home view and scroll to the very top,
+  // even when the hash is already #home and no hashchange would fire.
+  document.querySelectorAll('a[href="#home"]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      showView(false);
+      window.scrollTo(0, 0);
+    });
+  });
 
   // ---- Works gallery: filter by service + load more ----
   var WORKS_PAGE_SIZE = 8;
