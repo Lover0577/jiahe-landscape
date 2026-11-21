@@ -882,7 +882,7 @@
     }
     .site-nav a:hover { color: var(--leaf); }
     .site-nav a[aria-current="page"] { color: var(--leaf); box-shadow: inset 0 -2px 0 var(--clay); }
-    .site-nav a.nav-home {
+    .site-nav a.nav-home, .site-nav a.nav-works {
       display: inline-flex;
       align-items: center;
       gap: 7px;
@@ -894,9 +894,9 @@
       transition: background .2s ease, border-color .2s ease, color .2s ease;
     }
     .site-nav a.nav-home svg { width: 15px; height: 15px; flex: 0 0 auto; }
-    .site-nav a.nav-home:hover { background: rgba(185,205,156,.18); border-color: var(--leaf); color: var(--leaf); }
-    .site-nav a.nav-home[aria-current="page"] { background: rgba(185,205,156,.16); border-color: var(--leaf); color: var(--leaf); box-shadow: none; }
-    .site-nav a.nav-home:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+    .site-nav a.nav-home:hover, .site-nav a.nav-works:hover { background: rgba(185,205,156,.18); border-color: var(--leaf); color: var(--leaf); }
+    .site-nav a.nav-home[aria-current="page"], .site-nav a.nav-works[aria-current="page"] { background: rgba(185,205,156,.16); border-color: var(--leaf); color: var(--leaf); box-shadow: none; }
+    .site-nav a.nav-home:focus-visible, .site-nav a.nav-works:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
     #view-home[hidden], #view-works[hidden] { display: none; }
     .view-all { margin-top: 30px; }
     /* Works page */
@@ -971,7 +971,7 @@
     @media (max-width: 760px) {
       .site-nav { gap: 12px; }
       .site-nav a { display: inline-flex; align-items: center; min-height: 44px; }
-      .site-nav a.nav-home { padding: 0 13px; }
+      .site-nav a.nav-home, .site-nav a.nav-works { padding: 0 13px; }
       .works-hero { padding: 46px 0 44px; }
       .works-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
       .works-cta { justify-content: center; text-align: center; }
@@ -1032,7 +1032,7 @@
     <div class="topbar-right">
       <nav class="site-nav" aria-label="主导航 / Main navigation">
         <a class="nav-home" href="#home" data-nav="home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span data-lang="zh">首页</span><span data-lang="en">Home</span></a>
-        <a href="#works" data-nav="works"><span data-lang="zh">案例</span><span data-lang="en">Our Works</span></a>
+        <a class="nav-works" href="#works" data-nav="works"><span data-lang="zh">案例</span><span data-lang="en">Our Works</span></a>
       </nav>
       <a class="quote-nav" href="#quote"><span data-lang="zh">欢迎咨询</span><span data-lang="en">Contact Us</span></a>
       <div class="lang-switch" role="group" aria-label="Language selection / 语言选择">
